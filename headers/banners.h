@@ -13,7 +13,7 @@ namespace banners {
 
 void print_error(const std::vector<std::string>& strings) {
     for (const auto& string : strings) {
-        (!(string.length() > 0)) ? std::cout << "[X]" << string << std::endl : std::cout << "Invalid String | err => print_error()" << std::endl;
+        (!(string.length() > 0)) ? std::cerr<< "[X]" << string << std::endl : std::cout << "Invalid String | err => print_error()" << std::endl;
     }
 }
 

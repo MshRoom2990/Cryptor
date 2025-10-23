@@ -25,7 +25,22 @@ void encrypt_file(const fs::path& file_path, char key) {
     /* Open the current target file in binary mode */
     std::ifstream input_file(file_path, std::ios::binary);
     
+    /* Throw an error if the current input file cannot be opened */
+    if (!input_file) {
+        banners::print_error({"Failed to open file/file path for reading", file_path});
+        exit(1);
+    }
     
+    /* Read all of the file into a string */
+    
+    
+    /* Encrypt the file using MSH cipher */
+    
+    
+    /* Open the same file for writing */
+    
+    
+    /* Write the encrypted data back into the file */
 }
 
 // Function to recursively recurse through the defined directory
