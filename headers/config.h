@@ -7,9 +7,11 @@
 /* Define system path spearators - (System Definitions) */
 #if defined(_WIN32) || defined(_WIN64)
     std::string path_sep = "\\";
+    const char* homeDir = std::getenv("USERPROFILE");
 
 #else
     std::string path_sep = "/";
+    const char* homeDir = std::getenv("HOME");
 
 #endif
 
