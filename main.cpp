@@ -2,7 +2,7 @@
 //  main.cpp
 //  Cryptor
 //
-//  Created by Gleb Bair on 10/23/25.
+//  Created by MshRoom2290 on 10/23/25.
 //
 
 #include <iostream>
