@@ -14,7 +14,7 @@
 namespace cipher {
 void msh_cipher(std::string& data_entry, char key) {
     for (auto& c : data_entry) {
-        c ^= key; // XOR each byte
+        c ^= key;
     }
 }
 }
