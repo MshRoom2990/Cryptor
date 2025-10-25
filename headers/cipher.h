@@ -9,9 +9,10 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include "config.h"
 
 namespace cipher {
-void msh_cipher(const std::string& data_entry, char key) {
+void msh_cipher(std::string& data_entry, char key) {
     std::stringstream ss;
     
     for (char c : data_entry) {
@@ -19,7 +20,7 @@ void msh_cipher(const std::string& data_entry, char key) {
         int c_point = static_cast<unsigned char>(c);
         
         /* Seprate the numbers with a "/" */
-        ss << c_point << "/";
+        ss << c_point << separator;
     }
     
     /* Now, throw that into a XOR encoder */

