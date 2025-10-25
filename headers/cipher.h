@@ -13,20 +13,8 @@
 
 namespace cipher {
 void msh_cipher(std::string& data_entry, char key) {
-    std::stringstream ss;
-    
-    for (char c : data_entry) {
-        /* First, convert each character to its unicode form */
-        int c_point = static_cast<unsigned char>(c);
-        
-        /* Seprate the numbers with a "/" */
-        ss << c_point << separator;
-    }
-    
-    /* Now, throw that into a XOR encoder */
-    for (auto& byte : ss.str()) {
-        // XOR each byte with the key
-        byte ^= key;
+    for (auto& c : data_entry) {
+        c ^= key; // XOR each byte
     }
 }
 }
