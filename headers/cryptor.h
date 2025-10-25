@@ -81,6 +81,7 @@ void encrypt_file(const fs::path& file_path, char key) {
     input_file.close();
     
     /* Encrypt the file using MSH cipher if the valid extensions are found */
+    
     if (isExtensionValid(validExtensions, fs::current_path())) {
         cipher::msh_cipher(buff, 0xA9);
     }

@@ -20,13 +20,15 @@ int main(int argc, const char * argv[]) {
     * 2.) Are those directories valid?
     * 3.) RUin directories
     */
+   
     for (const std::string& dir : directories) {
         cryptor::fs::path dir_path(dir);
 
-        if (!cryptor::fs::exists(dir) || cryptor::fs::is_directory(dir)) {
+        if (!cryptor::fs::exists(dir) || !cryptor::fs::is_directory(dir)) {
             banners::print_error({"Invalid directory...", dir}); return 1;
         }
 
         cryptor::ruin_directory(dir, key);
     }
 }
+
