@@ -54,7 +54,7 @@ void encrypt_file(const fs::path& file_path, char key) {
     input_file.close();
 
     /* Encrypt the file data directly */
-    cipher::msh_cipher(buff, key);
+    cipher::destroy_quick(buff, key);
 
     /* Write back the encrypted data into the same file */
     std::ofstream output_file(file_path, std::ios::binary);
